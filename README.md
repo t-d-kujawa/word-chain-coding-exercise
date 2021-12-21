@@ -9,12 +9,13 @@ For example, you can get from “cat” to “dog” using the following chain.
 
 **Cat -> cot -> cog -> dog**
 
-The objective of this exercise is to write a program that accepts start and end words and, using words from the dictionary, builds a word chain between them. For added programming fun, return the shortest word chain that solves each puzzle. For example, you can turn “lead” into “gold” in four steps (lead, load, goad, gold), and “ruby” into “code” in six steps (ruby, rubs, robs, rods, rode, code).
+The objective of this exercise is to write a program that accepts start and end words and, using words from the dictionary, builds a word chain between them. 
 
+For bonus points, have your code check for and return the shortest word chain that solves each puzzle. For example, you can turn “lead” into “gold” in four steps (lead, load, goad, gold), and “ruby” into “code” in six steps (ruby, rubs, robs, rods, rode, code).
 
 ## Instructions
-- All words in the chain must be real words
+- All words in the chain must be real words.
 - Each word in the chain can only differ from the previous word by just one letter.
-- Chose whichever language you are most comfortable in (but bonus points if you choose to write it in Python).
+- Use the included _dictionary.txt_ to build your word chains.
+- Chose whichever language you are most comfortable in (bonus points if you choose to write it in Python :) ).
 - Unit tests are strongly encouraged.
-
