@@ -14,8 +14,11 @@ def main():
         dictionary = read_dictionary(dictionary_path)
     chain = get_chain(first_word, final_word, dictionary)
 
-    print(f"A chain was found with {len(chain)} links:")
-    print(" -> ".join(chain))
+    if len(chain) == 0:
+        print(f"No chain is possible between {first_word} and {final_word}")
+    else:
+        print(f"A chain was found with {len(chain)} links:")
+        print(" -> ".join(chain))
 
 
 if __name__ == '__main__':

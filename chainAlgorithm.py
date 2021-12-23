@@ -4,35 +4,45 @@ def get_chain(start, end, dictionary):
     start -- the first word in the chain
     end -- the last word in the chain
     dictionary -- a list of strings which count as words"""
+    # Immediately
     if start == end:
         return [start]
 
-    dictionary.remove(start)
-    dictionary.remove(end)
+    # bidirectional_bfs expects the words in current_nodes and target_nodes to not be in the dictionary
+    if start in dictionary:
+        dictionary.remove(start)
+    if end in dictionary:
+        dictionary.remove(end)
+
     chain = bidirectional_bfs([SearchNode(start)], [SearchNode(end)], dictionary)
-    if chain[0] != start:
+
+    # Bidirectional nature means result may be in opposite order
+    if len(chain) > 0 and chain[0] != start:
         chain.reverse()
     return chain
 
 
-def bidirectional_bfs(current_nodes, target_nodes, remaining_dictionary):
+def bidirectional_bfs(current_nodes, target_nodes, dictionary):
     """A recursive implementation of Breadth-first search to find a chain"""
     # Check if this is the last step
     potential_chain = check_single_step(current_nodes, target_nodes)
     if len(potential_chain) > 0:
         return potential_chain
 
-    # If a single step was not sufficient, prepare the next step
+    # If a single step was not sufficient, find all adjacent words from the dictionary
+    remaining_dictionary = dictionary.copy()
     next_words = []
     for current_word in current_nodes:
         adjacent_words = get_adjacent_words(current_word, remaining_dictionary)
+        for found_word in adjacent_words:
+            remaining_dictionary.remove(found_word)
         next_words.extend(map(lambda word: SearchNode(word, current_word), adjacent_words))
 
-    # Avoid searching duplicates
-    next_dictionary = remaining_dictionary.copy()
-    for next_word in next_words:
-        next_dictionary.remove(next_word.word)
-    return bidirectional_bfs(target_nodes, next_words, next_dictionary)
+    # if no adjacent words were found, then there is no path
+    if len(next_words) == 0:
+        return []
+
+    return bidirectional_bfs(target_nodes, next_words, remaining_dictionary)
 
 
 def check_single_step(current_nodes, target_nodes):
@@ -59,16 +69,34 @@ def get_adjacent_words(current_node, dictionary):
 
 def check_one_char_difference(str1, str2):
     """Returns true if the two strings are 1 character different"""
-    # different length strings not supported yet
-    if len(str1) != len(str2):
-        return False
-    differences = 0
-    for i in range(0, len(str1)):
-        if str1[i] != str2[i]:
-            differences += 1
-            if differences > 1:
-                return False
-    return differences == 1
+    return get_levenshtein_distance(str1, str2) == 1
+
+
+def get_levenshtein_distance(str1, str2):
+    """An implementation of the Levenshtein Distance algorithm"""
+    # Prepare the original matrix
+    matrix = []
+    for s1 in range(0, len(str1)+1):
+        matrix.append([s1])
+    for s2 in range(1, len(str2)+1):
+        matrix[0].append(s2)
+
+    for s1 in range(1, len(str1)+1):
+        for s2 in range(1, len(str2)+1):
+            if str1[s1-1] == str2[s2-1]:
+                matrix[s1].append(matrix[s1-1][s2-1])
+            else:
+                a = matrix[s1][s2-1]
+                b = matrix[s1-1][s2]
+                c = matrix[s1-1][s2-1]
+                if a <= b and a <= c:
+                    matrix[s1].append(a + 1)
+                elif b <= a and b <= c:
+                    matrix[s1].append(b + 1)
+                else:
+                    matrix[s1].append(c + 1)
+
+    return matrix[len(str1)][len(str2)]
 
 
 class SearchNode:
