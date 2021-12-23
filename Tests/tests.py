@@ -106,6 +106,52 @@ class FullAlgorithmTests(unittest.TestCase):
         self.assertEqual(result[1], "hose")
         self.assertEqual(result[2], "host")
 
+    def test_length_increase(self):
+        result = chainAlgorithm.get_chain("pace", "paced", ["pace", "paced"])
+        self.assertEqual(len(result), 2)
+
+    def test_length_decrease(self):
+        result = chainAlgorithm.get_chain("hope", "hop", ["hope", "hop"])
+        self.assertEqual(len(result), 2)
+
+    def test_route_through_other_length(self):
+        result = chainAlgorithm.get_chain("abet", "bate", ["abet", "bet", "bat", "bate"])
+        self.assertEqual(len(result), 4)
+
+    def test_chain_impossible(self):
+        result = chainAlgorithm.get_chain("hello", "goodbye", ["hello", "irrelevant", "random", "useless", "goodbye"])
+        self.assertEqual(len(result), 0)
+
+    def test_self_chain(self):
+        result = chainAlgorithm.get_chain("hello", "hello", ["hello"])
+        self.assertEqual(len(result), 1)
+
+
+class LevenshteinDistanceTests(unittest.TestCase):
+    def test_zero_distance(self):
+        result = chainAlgorithm.get_levenshtein_distance("hope", "hope")
+        self.assertEqual(result, 0)
+
+    def test_one_change(self):
+        result = chainAlgorithm.get_levenshtein_distance("hope", "hose")
+        self.assertEqual(result, 1)
+
+    def test_one_addition(self):
+        result = chainAlgorithm.get_levenshtein_distance("hope", "hoped")
+        self.assertEqual(result, 1)
+
+    def test_one_removal(self):
+        result = chainAlgorithm.get_levenshtein_distance("hope", "hop")
+        self.assertEqual(result, 1)
+
+    def test_change_and_add(self):
+        result = chainAlgorithm.get_levenshtein_distance("hope", "hyper")
+        self.assertEqual(result, 2)
+
+    def test_change_and_remove(self):
+        result = chainAlgorithm.get_levenshtein_distance("hope", "hip")
+        self.assertEqual(result, 2)
+
 
 if __name__ == '__main__':
     unittest.main()
