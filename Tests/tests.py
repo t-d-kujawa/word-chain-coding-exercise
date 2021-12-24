@@ -158,19 +158,5 @@ class LevenshteinDistanceTests(unittest.TestCase):
         self.assertEqual(result, 2)
 
 
-class StandardBfsTests(unittest.TestCase):
-    def test_chain_found(self):
-        result = chainAlgorithm.standard_bfs("hope", "host", ["hope", "hose", "host", "distraction"])
-        self.assertEqual(len(result), 3)
-        self.assertEqual(result[0], "hope")
-        self.assertEqual(result[1], "hose")
-        self.assertEqual(result[2], "host")
-
-    def test_chain_impossible(self):
-        result = chainAlgorithm.standard_bfs("hello", "goodbye",
-                                          ["hello", "irrelevant", "random", "useless", "goodbye"])
-        self.assertEqual(len(result), 0)
-
-
 if __name__ == '__main__':
     unittest.main()
