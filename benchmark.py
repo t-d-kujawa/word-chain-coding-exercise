@@ -5,6 +5,7 @@ import dictionaryParser
 
 
 def generate_test_cases(dictionary, test_count):
+    """Generates random pairs of words from the dictionary"""
     test_cases = []
     dictionary_size = len(dictionary)
     for _ in range(0, test_count):
@@ -15,6 +16,7 @@ def generate_test_cases(dictionary, test_count):
 
 
 def benchmark_function(function, dictionary, test_cases):
+    """Runs the chain function on all test cases, returning the avg and max times"""
     run_times = []
     max_run_time = 0
     total_run_time = 0
@@ -32,8 +34,8 @@ def benchmark_function(function, dictionary, test_cases):
 
 
 def run_benchmarks():
-    functions = [("Bidirectional BFS", chainAlgorithm.get_chain),
-                 ("Alphabetical optimization", chainAlgorithm.get_chain_A)]
+    """Benchmarks multiple functions on the same set of random test cases"""
+    functions = [("Bidirectional BFS", chainAlgorithm.get_chain)]
     dictionary = dictionaryParser.read_dictionary()
     test_count = 10
     test_cases = generate_test_cases(dictionary, test_count)
