@@ -4,9 +4,11 @@ def get_chain(start, end, dictionary):
     start -- the first word in the chain
     end -- the last word in the chain
     dictionary -- a list of strings which count as words"""
+    # Immediately short-circuit 1 length chains
     if start == end:
         return [start]
 
+    # Duplicate the dictionary so it can be modified safely
     remaining_dictionary = dictionary.copy()
 
     # bidirectional_bfs expects the words in current_nodes and target_nodes to not be in the dictionary
@@ -15,6 +17,7 @@ def get_chain(start, end, dictionary):
     if end in remaining_dictionary:
         remaining_dictionary.remove(end)
 
+    # Run the main algorithm
     chain = bidirectional_bfs([SearchNode(start)], [SearchNode(end)], remaining_dictionary)
 
     # Bidirectional nature means result may be in opposite order
@@ -46,80 +49,6 @@ def bidirectional_bfs(current_nodes, target_nodes, dictionary):
     return bidirectional_bfs(target_nodes, next_words, dictionary)
 
 
-def get_chain_A(start, end, dictionary):
-    """Finds a minimum length chain of words with only one character different between each link
-
-    start -- the first word in the chain
-    end -- the last word in the chain
-    dictionary -- a list of strings which count as words"""
-    if start == end:
-        return [start]
-
-    remaining_dictionary = dictionary.copy()
-
-    # bidirectional_bfs expects the words in current_nodes and target_nodes to not be in the dictionary
-    if start in remaining_dictionary:
-        remaining_dictionary.remove(start)
-    if end in remaining_dictionary:
-        remaining_dictionary.remove(end)
-
-    chain = bidirectional_bfs_A([SearchNode(start)], [SearchNode(end)], remaining_dictionary)
-
-    # Bidirectional nature means result may be in opposite order
-    if len(chain) > 0 and chain[0] != start:
-        chain.reverse()
-    return chain
-
-
-def bidirectional_bfs_A(current_nodes, target_nodes, dictionary):
-    """A recursive implementation of Breadth-first search to find a chain"""
-    # Check if this is the last step
-    potential_chain = check_single_step_A(current_nodes, target_nodes)
-    if len(potential_chain) > 0:
-        return potential_chain
-
-    # If a single step was not sufficient, find all adjacent words from the dictionary
-    next_words = []
-    for current_word in current_nodes:
-        adjacent_words = get_adjacent_words(current_word, dictionary)
-        for found_word in adjacent_words:
-            dictionary.remove(found_word)
-        next_words.extend(map(lambda word: SearchNode(word, current_word), adjacent_words))
-
-    # If no adjacent words were found, then there is no path
-    if len(next_words) == 0:
-        return []
-
-    # Otherwise, move on to the next step
-    return bidirectional_bfs(target_nodes, next_words, dictionary)
-
-
-def standard_bfs(start, end, dictionary):
-    if start == end:
-        return [start]
-    remaining_dictionary = dictionary.copy()
-
-    if start in remaining_dictionary:
-        remaining_dictionary.remove(start)
-
-    current_nodes = [SearchNode(start)]
-    while len(current_nodes) > 0:
-        adjacent_nodes = []
-        for node in current_nodes:
-            adjacent_words = get_adjacent_words(node, remaining_dictionary)
-            if end in adjacent_words:
-                history = node.get_list()
-                history.append(end)
-                return history
-            for word in adjacent_words:
-                adjacent_nodes.append(SearchNode(word, node))
-                remaining_dictionary.remove(word)
-        current_nodes = adjacent_nodes
-
-    # If the while loop ends without returning, no chain is possible
-    return []
-
-
 def check_single_step(current_nodes, target_nodes):
     """Returns a chain if any target node is one step from any current node, empty otherwise"""
     for current_node in current_nodes:
@@ -130,26 +59,6 @@ def check_single_step(current_nodes, target_nodes):
                 right_list.reverse()
                 left_list.extend(right_list)
                 return left_list
-    return []
-
-
-def check_single_step_A(left_nodes, right_nodes):
-    """Same as check_single_step, but optimizes based on assuming current_nodes and target_nodes are alphabetized"""
-    left_index = 0
-    right_index = 0
-    while left_index < len(left_nodes) and right_index < len(right_nodes):
-        left_word = left_nodes[left_index].word
-        right_word = right_nodes[right_index].word
-        if left_word == right_word:
-            left_list = left_word.get_list()
-            right_list = right_word.get_list()
-            right_list.reverse()
-            left_list.extend(right_list)
-            return left_list
-        elif left_word < right_word:
-            left_index += 1
-        else:
-            right_index += 1
     return []
 
 
