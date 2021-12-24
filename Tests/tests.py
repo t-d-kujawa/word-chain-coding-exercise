@@ -126,6 +126,11 @@ class FullAlgorithmTests(unittest.TestCase):
         result = chainAlgorithm.get_chain("hello", "hello", ["hello"])
         self.assertEqual(len(result), 1)
 
+    def test_dictionary_preserved(self):
+        dictionary = ["hope", "hose", "host", "distraction"]
+        chainAlgorithm.get_chain("hope", "host", dictionary)
+        self.assertEqual(len(dictionary), 4)
+
 
 class LevenshteinDistanceTests(unittest.TestCase):
     def test_zero_distance(self):
@@ -151,6 +156,20 @@ class LevenshteinDistanceTests(unittest.TestCase):
     def test_change_and_remove(self):
         result = chainAlgorithm.get_levenshtein_distance("hope", "hip")
         self.assertEqual(result, 2)
+
+
+class StandardBfsTests(unittest.TestCase):
+    def test_chain_found(self):
+        result = chainAlgorithm.standard_bfs("hope", "host", ["hope", "hose", "host", "distraction"])
+        self.assertEqual(len(result), 3)
+        self.assertEqual(result[0], "hope")
+        self.assertEqual(result[1], "hose")
+        self.assertEqual(result[2], "host")
+
+    def test_chain_impossible(self):
+        result = chainAlgorithm.standard_bfs("hello", "goodbye",
+                                          ["hello", "irrelevant", "random", "useless", "goodbye"])
+        self.assertEqual(len(result), 0)
 
 
 if __name__ == '__main__':
