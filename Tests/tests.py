@@ -126,6 +126,11 @@ class FullAlgorithmTests(unittest.TestCase):
         result = chainAlgorithm.get_chain("hello", "hello", ["hello"])
         self.assertEqual(len(result), 1)
 
+    def test_dictionary_preserved(self):
+        dictionary = ["hope", "hose", "host", "distraction"]
+        chainAlgorithm.get_chain("hope", "host", dictionary)
+        self.assertEqual(len(dictionary), 4)
+
 
 class LevenshteinDistanceTests(unittest.TestCase):
     def test_zero_distance(self):

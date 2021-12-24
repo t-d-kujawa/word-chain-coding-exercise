@@ -4,17 +4,21 @@ def get_chain(start, end, dictionary):
     start -- the first word in the chain
     end -- the last word in the chain
     dictionary -- a list of strings which count as words"""
-    # Immediately
+    # Immediately short-circuit 1 length chains
     if start == end:
         return [start]
 
-    # bidirectional_bfs expects the words in current_nodes and target_nodes to not be in the dictionary
-    if start in dictionary:
-        dictionary.remove(start)
-    if end in dictionary:
-        dictionary.remove(end)
+    # Duplicate the dictionary so it can be modified safely
+    remaining_dictionary = dictionary.copy()
 
-    chain = bidirectional_bfs([SearchNode(start)], [SearchNode(end)], dictionary)
+    # bidirectional_bfs expects the words in current_nodes and target_nodes to not be in the dictionary
+    if start in remaining_dictionary:
+        remaining_dictionary.remove(start)
+    if end in remaining_dictionary:
+        remaining_dictionary.remove(end)
+
+    # Run the main algorithm
+    chain = bidirectional_bfs([SearchNode(start)], [SearchNode(end)], remaining_dictionary)
 
     # Bidirectional nature means result may be in opposite order
     if len(chain) > 0 and chain[0] != start:
@@ -30,19 +34,19 @@ def bidirectional_bfs(current_nodes, target_nodes, dictionary):
         return potential_chain
 
     # If a single step was not sufficient, find all adjacent words from the dictionary
-    remaining_dictionary = dictionary.copy()
     next_words = []
     for current_word in current_nodes:
-        adjacent_words = get_adjacent_words(current_word, remaining_dictionary)
+        adjacent_words = get_adjacent_words(current_word, dictionary)
         for found_word in adjacent_words:
-            remaining_dictionary.remove(found_word)
+            dictionary.remove(found_word)
         next_words.extend(map(lambda word: SearchNode(word, current_word), adjacent_words))
 
-    # if no adjacent words were found, then there is no path
+    # If no adjacent words were found, then there is no path
     if len(next_words) == 0:
         return []
 
-    return bidirectional_bfs(target_nodes, next_words, remaining_dictionary)
+    # Otherwise, move on to the next step
+    return bidirectional_bfs(target_nodes, next_words, dictionary)
 
 
 def check_single_step(current_nodes, target_nodes):
