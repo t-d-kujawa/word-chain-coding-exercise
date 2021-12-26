@@ -36,7 +36,7 @@ def parse_args(args):
     parser.add_argument("-l", "--length", action="store_true", help="require chains of constant word length")
     parser.add_argument("-q", "--quiet", action="store_true", help="reduces output to a minimum")
     parser.add_argument("-w", "--words", nargs=2, metavar=("start", "end"),
-                        help="provide the start and end word here to skip the prompt")
+                        help="provide the start and end words here to skip the prompt")
 
     parsed_args = parser.parse_args(args)
     return parsed_args

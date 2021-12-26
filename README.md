@@ -1,21 +1,10 @@
 # Word Chain Coding Exercise
-_*Inspired by* http://codekata.com/kata/kata19-word-chains/_
+When running *WordChain.py*, the program will ask for the first and last words, then print a chain starting with the first word and ending with the last word. The chain will have the minimum possible length, but there may be other possible chains with the same length.
 
-The goal of this exercise is to create a program that solves word-chain puzzles.
+Additional options are available by adding the following flags when running *WordChain.py*:
 
-A word chain is type of puzzle where the challenge is to build a chain of words, starting with one particular word and ending with another. Successive entries in the chain must all be real words, and each can differ from the previous word by just one letter. 
-
-For example, you can get from “cat” to “dog” using the following chain.
-
-**Cat -> cot -> cog -> dog**
-
-The objective of this exercise is to write a program that accepts start and end words and, using words from the dictionary, builds a word chain between them. 
-
-For bonus points, have your code check for and return the shortest word chain that solves each puzzle. For example, you can turn “lead” into “gold” in four steps (lead, load, goad, gold), and “ruby” into “code” in six steps (ruby, rubs, robs, rods, rode, code).
-
-## Instructions
-- All words in the chain must be real words.
-- Each word in the chain can only differ from the previous word by just one letter.
-- Use the included _dictionary.txt_ to build your word chains.
-- Chose whichever language you are most comfortable in (bonus points if you choose to write it in Python :) ).
-- Unit tests are strongly encouraged.
+- -d or --dictionary will allow you to choose a different dictionary for that chain
+- -l or --length will allow you to remove "add a character" and "remove a character" as possible chain steps, forcing all steps in the chain to be the same length
+- -q or --quiet will reduce the output to simply list the steps in the chain, with a blank list for no possible chain
+- -w or --words will allow you to specify the first and last words in advance and skip the prompt
+- -h or --help will list these options
