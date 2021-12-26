@@ -59,13 +59,20 @@ class DictionaryParserTests(unittest.TestCase):
 
 class OneCharDifferentTests(unittest.TestCase):
     def test_zero_char_different(self):
-        self.assertFalse(chainAlgorithm.check_one_char_difference("hope", "hope"))
+        self.assertFalse(chainAlgorithm.check_one_char_difference("hope", "hope"), False)
+        self.assertFalse(chainAlgorithm.check_one_char_difference("hope", "hope"), True)
 
     def test_one_char_different(self):
-        self.assertTrue(chainAlgorithm.check_one_char_difference("hope", "hose"))
+        self.assertTrue(chainAlgorithm.check_one_char_difference("hope", "hose"), False)
+        self.assertTrue(chainAlgorithm.check_one_char_difference("hope", "hose"), True)
 
     def test_two_char_different(self):
-        self.assertFalse(chainAlgorithm.check_one_char_difference("hope", "hold"))
+        self.assertFalse(chainAlgorithm.check_one_char_difference("hope", "hold"), False)
+        self.assertFalse(chainAlgorithm.check_one_char_difference("hope", "hold"), True)
+
+    def test_different_length(self):
+        self.assertTrue(chainAlgorithm.check_one_char_difference("hope", "hoped", False))
+        self.assertFalse(chainAlgorithm.check_one_char_difference("hope", "hoped", True))
 
 
 class WordHistoryTests(unittest.TestCase):
@@ -87,10 +94,23 @@ class WordHistoryTests(unittest.TestCase):
 
 
 class AdjacentWordsTests(unittest.TestCase):
-    def test_adjacent_words_found(self):
+    def test_variable_length(self):
         current_word = chainAlgorithm.SearchNode("hope")
-        other_words = ["hope", "nope", "hype", "hole", "hops", "hold", "cape", "gold", "type", "rate"]
+        other_words = ["hope", "nope", "hype", "hole", "hops", "hoped", "hop", "hold", "cape", "gold", "type", "rate"]
         adjacent_words = chainAlgorithm.get_adjacent_words(current_word, other_words)
+        self.assertEqual(len(adjacent_words), 6)
+        self.assertIn("nope", adjacent_words)
+        self.assertIn("hype", adjacent_words)
+        self.assertIn("hole", adjacent_words)
+        self.assertIn("hops", adjacent_words)
+        self.assertIn("hoped", adjacent_words)
+        self.assertIn("hop", adjacent_words)
+
+    def test_constant_length(self):
+        current_word = chainAlgorithm.SearchNode("hope")
+        other_words = ["hope", "nope", "hype", "hole", "hops", "hoped", "hop", "hold", "cape", "gold", "type",
+                       "rate"]
+        adjacent_words = chainAlgorithm.get_adjacent_words(current_word, other_words, True)
         self.assertEqual(len(adjacent_words), 4)
         self.assertIn("nope", adjacent_words)
         self.assertIn("hype", adjacent_words)
@@ -130,6 +150,27 @@ class FullAlgorithmTests(unittest.TestCase):
         dictionary = ["hope", "hose", "host", "distraction"]
         chainAlgorithm.get_chain("hope", "host", dictionary)
         self.assertEqual(len(dictionary), 4)
+
+    # constant length tests
+    def test_cl_chain_found(self):
+        result = chainAlgorithm.get_chain("hope", "host", ["hope", "hose", "host", "distraction"], True)
+        self.assertEqual(len(result), 3)
+        self.assertEqual(result[0], "hope")
+        self.assertEqual(result[1], "hose")
+        self.assertEqual(result[2], "host")
+
+    def test_cl_length_increase(self):
+        result = chainAlgorithm.get_chain("pace", "paced", ["pace", "paced"], True)
+        self.assertEqual(len(result), 0)
+
+    def test_cl_length_decrease(self):
+        result = chainAlgorithm.get_chain("hope", "hop", ["hope", "hop"], True)
+        self.assertEqual(len(result), 0)
+
+    def test_cl_route_through_other_length(self):
+        result = chainAlgorithm.get_chain("abet", "bate", ["abet", "bet", "bat", "bate"], True)
+        self.assertEqual(len(result), 0)
+
 
 
 class LevenshteinDistanceTests(unittest.TestCase):
